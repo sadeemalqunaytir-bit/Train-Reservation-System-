@@ -91,7 +91,7 @@ class AddPassengerPage extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("Save Passenger"),
+                child: const Text("Save Passenger",style: TextStyle(color: Colors.black),),
               ),
             ),
           ],
