@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Where would you like to go today?',
+              'Where would you like to do today?',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
@@ -120,7 +120,7 @@ class HomePage extends StatelessWidget {
 
 
             const Text(
-              'Recent Trips',
+              'Recent Trips Booked',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
