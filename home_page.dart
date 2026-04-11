@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'addpassenger_page.dart';
+import 'train_schedules_management_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -32,7 +34,7 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            
+
             const Text(
               'Welcome back, Admin!',
               style: TextStyle(
@@ -51,7 +53,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            
+
             SizedBox(
               height: 50,
               width: double.infinity,
@@ -66,13 +68,13 @@ class HomePage extends StatelessWidget {
                     borderSide: BorderSide.none,
                   ),
                   contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 ),
               ),
             ),
             const SizedBox(height: 30),
 
-            
+
             const Text(
               'Quick Access',
               style: TextStyle(
@@ -85,9 +87,29 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _quickAccessItem(
-                    icon: Icons.people, label: 'Passengers', onTap: () {}),
+                  icon: Icons.people,
+                  label: 'Passengers',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddPassengerPage(),
+                      ),
+                    );
+                  },
+                ),
                 _quickAccessItem(
-                    icon: Icons.schedule, label: 'Schedules', onTap: () {}),
+                    icon: Icons.schedule, 
+                    label: 'Schedules',
+                     onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                       builder: (context) => const TrainSchedulesManagementPage(),
+                      ),
+                    );
+                  },
+                ),
                 _quickAccessItem(
                     icon: Icons.confirmation_num,
                     label: 'Reservations',
@@ -96,14 +118,14 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
 
-            
+
             const Text(
               'Recent Trips',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 15),
 
-            
+
             Column(
               children: [
                 _tripItem(
@@ -120,7 +142,7 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      
+
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
@@ -140,7 +162,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
- 
+
   Widget _quickAccessItem(
       {required IconData icon, required String label, required VoidCallback onTap}) {
     return GestureDetector(
@@ -168,7 +190,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  
+
   Widget _tripItem(
       {required String route, required String status, required Color color}) {
     return Container(
