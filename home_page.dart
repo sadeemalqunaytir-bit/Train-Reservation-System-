@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'addpassenger_page.dart';
 import 'train_schedules_management_page.dart';
-
+import 'reservation_choice_page.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -113,7 +113,15 @@ class HomePage extends StatelessWidget {
                 _quickAccessItem(
                     icon: Icons.confirmation_num,
                     label: 'Reservations',
-                    onTap: () {}),
+                    onTap: () {
+                      Navigator.push(
+                   context,
+                 MaterialPageRoute(
+           builder: (context) => const ReservationChoicePage(),
+      ),
+    );
+                    },
+                ),
               ],
             ),
             const SizedBox(height: 30),
