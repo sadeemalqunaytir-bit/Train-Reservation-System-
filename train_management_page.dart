@@ -39,8 +39,6 @@ class _TrainManagementPageState extends State<TrainManagementPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
-            // Add Button
             ElevatedButton(
               onPressed: () async {
                 final result = await Navigator.push(
@@ -56,10 +54,7 @@ class _TrainManagementPageState extends State<TrainManagementPage> {
               },
               child: const Text("+ Add Train"),
             ),
-
             const SizedBox(height: 20),
-
-            // Table
             Expanded(
               child: trains.isEmpty
                   ? const Center(child: Text("No trains added yet"))
@@ -73,55 +68,63 @@ class _TrainManagementPageState extends State<TrainManagementPage> {
                           columns: const [
                             DataColumn(label: Text("ID")),
                             DataColumn(label: Text("Name")),
-                            DataColumn(label: Text("Category")), // ✅ NEW
-                            DataColumn(label: Text("Capacity")),
-                            DataColumn(label: Text("Ticket")),   // ✅ NEW
+                            DataColumn(label: Text("Category")),
+                            DataColumn(label: Text("Seats")),
+                            DataColumn(label: Text("Ticket")),
                             DataColumn(label: Text("Status")),
                             DataColumn(label: Text("Action")),
                           ],
                           rows: List.generate(trains.length, (index) {
                             final t = trains[index];
 
-                            return DataRow(cells: [
-                              DataCell(Text(t['id'] ?? '')),
-                              DataCell(Text(t['name'] ?? '')),
-                              DataCell(Text(t['category'] ?? '')), // ✅ NEW
-                              DataCell(Text(t['capacity'] ?? '')),
-                              DataCell(Text(t['ticket'] ?? '')),   // ✅ NEW
-                              DataCell(Text(t['status'] ?? '')),
-
-                              DataCell(
-                                Row(
-                                  children: [
-                                    // ✏️ EDIT
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, color: Colors.purple),
-                                      onPressed: () async {
-                                        final result = await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                AddTrainPage(existingTrain: t),
-                                          ),
-                                        );
-
-                                        if (result != null) {
-                                          _editTrain(index, result);
-                                        }
-                                      },
-                                    ),
-
-                                    // 🗑 DELETE
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () {
-                                        _deleteTrain(index);
-                                      },
-                                    ),
-                                  ],
+                            return DataRow(
+                              cells: [
+                                DataCell(Text((t['id'] ?? '').toString())),
+                                DataCell(Text((t['name'] ?? '').toString())),
+                                DataCell(Text((t['category'] ?? '').toString())),
+                                DataCell(
+                                  Text(
+                                    "${t['availableSeats'] ?? t['capacity']}/${t['capacity'] ?? 0}",
+                                  ),
                                 ),
-                              ),
-                            ]);
+                                DataCell(Text((t['ticket'] ?? '').toString())),
+                                DataCell(Text((t['status'] ?? '').toString())),
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.edit,
+                                          color: Colors.purple,
+                                        ),
+                                        onPressed: () async {
+                                          final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddTrainPage(existingTrain: t),
+                                            ),
+                                          );
+
+                                          if (result != null) {
+                                            _editTrain(index, result);
+                                          }
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          _deleteTrain(index);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
                           }),
                         ),
                       ),
