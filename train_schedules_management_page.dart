@@ -149,5 +149,4 @@ class TrainSchedulesManagementPage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
+  }}
