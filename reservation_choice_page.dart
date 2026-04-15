@@ -6,8 +6,9 @@ class ReservationChoicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color mainPurple = Color(0xFF6F42C1);
+    const Color mainPurple = Color(0xFF7E57C2);
     const Color lightPurple = Color(0xFFF3EEFC);
+    const Color cardWhite = Color(0xFFFDFDFD);
     const Color iconBoxPurple = Color(0xFFB78CF2);
 
     return Scaffold(
@@ -17,49 +18,77 @@ class ReservationChoicePage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: mainPurple),
-          onPressed: () {},
+          onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Reservation',
           style: TextStyle(
             color: mainPurple,
-            fontSize: 26,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(2),
-          child: Container(
-            height: 2,
-            color: mainPurple,
-          ),
+          child: Container(height: 2, color: mainPurple),
         ),
       ),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 430),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 28),
             child: Column(
               children: [
-                _choiceCard(
+                const SizedBox(height: 18),
+
+                _reservationCard(
                   title: 'Booking A Trip',
                   icon: Icons.confirmation_num_outlined,
                   mainPurple: mainPurple,
                   iconBoxPurple: iconBoxPurple,
-                  onTap: () {},
-                ),
-                const SizedBox(height: 30),
-                _choiceCard(
-                  title: 'View Reservations',
-                  icon: Icons.groups_outlined,
-                  mainPurple: mainPurple,
-                  iconBoxPurple: iconBoxPurple,
+                  cardWhite: cardWhite,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const SelectTripPage(),
+                        builder: (_) => const SelectTripPage(mode: 'booking'),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 28),
+
+                _reservationCard(
+                  title: 'Cancel Trip',
+                  icon: Icons.cancel_outlined,
+                  mainPurple: mainPurple,
+                  iconBoxPurple: iconBoxPurple,
+                  cardWhite: cardWhite,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SelectTripPage(mode: 'cancel'),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 28),
+
+                _reservationCard(
+                  title: 'View Reservations',
+                  icon: Icons.groups_outlined,
+                  mainPurple: mainPurple,
+                  iconBoxPurple: iconBoxPurple,
+                  cardWhite: cardWhite,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SelectTripPage(mode: 'view'),
                       ),
                     );
                   },
@@ -72,58 +101,60 @@ class ReservationChoicePage extends StatelessWidget {
     );
   }
 
-  Widget _choiceCard({
+  Widget _reservationCard({
     required String title,
     required IconData icon,
     required Color mainPurple,
     required Color iconBoxPurple,
+    required Color cardWhite,
     required VoidCallback onTap,
   }) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: cardWhite,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Container(
               width: double.infinity,
-              height: 78,
+              height: 72,
               decoration: BoxDecoration(
                 color: mainPurple,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Container(
-                  width: 86,
-                  height: 50,
+                  width: 84,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: iconBoxPurple,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     icon,
-                    color: Colors.black87,
+                    color: const Color(0xFF3D235E),
                     size: 28,
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF3D235E),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
