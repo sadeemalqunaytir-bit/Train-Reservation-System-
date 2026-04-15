@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'data.dart';
+import 'data_storage.dart';
 
 class ViewReservationsPage extends StatefulWidget {
-  final String selectedRoute;
-  final String selectedTime;
+  final Map<String, dynamic> schedule;
 
   const ViewReservationsPage({
     super.key,
-    required this.selectedRoute,
-    required this.selectedTime,
+    required this.schedule,
   });
 
   @override
@@ -17,40 +15,22 @@ class ViewReservationsPage extends StatefulWidget {
 
 class _ViewReservationsPageState extends State<ViewReservationsPage> {
   final TextEditingController searchController = TextEditingController();
-  List<Map<String, String>> filteredReservations = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadReservations();
-    searchController.addListener(_filterReservations);
-  }
-
-  void _loadReservations() {
-    filteredReservations = Data.reservations.where((reservation) {
-      return reservation['route'] == widget.selectedRoute &&
-          reservation['time'] == widget.selectedTime;
-    }).toList();
-  }
-
-  void _filterReservations() {
+  List<Map<String, dynamic>> get filteredBookings {
     final query = searchController.text.toLowerCase();
 
-    setState(() {
-      filteredReservations = Data.reservations.where((reservation) {
-        final sameTrip = reservation['route'] == widget.selectedRoute &&
-            reservation['time'] == widget.selectedTime;
+    return DataStorage.bookings.where((booking) {
+      final sameSchedule = booking['scheduleId'] == widget.schedule['id'];
 
-        final matchesQuery =
-            reservation['ticketId']!.toLowerCase().contains(query) ||
-            reservation['passengerId']!.toLowerCase().contains(query) ||
-            reservation['name']!.toLowerCase().contains(query) ||
-            reservation['seat']!.toLowerCase().contains(query) ||
-            reservation['status']!.toLowerCase().contains(query);
+      final matchesSearch =
+          booking['id'].toString().toLowerCase().contains(query) ||
+          booking['passengerName'].toString().toLowerCase().contains(query) ||
+          booking['passengerId'].toString().toLowerCase().contains(query) ||
+          booking['seatNumber'].toString().toLowerCase().contains(query) ||
+          booking['status'].toString().toLowerCase().contains(query);
 
-        return sameTrip && matchesQuery;
-      }).toList();
-    });
+      return sameSchedule && matchesSearch;
+    }).toList();
   }
 
   @override
@@ -61,29 +41,29 @@ class _ViewReservationsPageState extends State<ViewReservationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color mainPurple = Color(0xFF6F42C1);
+    const Color mainPurple = Color(0xFF7E57C2);
     const Color lightPurple = Color(0xFFF3EEFC);
+
+    final route = '${widget.schedule['from']} - ${widget.schedule['to']}';
+    final departure = widget.schedule['departure']?.toString() ?? '';
+    final seatsLeft = widget.schedule['availableSeats']?.toString() ?? '0';
 
     return Scaffold(
       backgroundColor: lightPurple,
       appBar: AppBar(
         backgroundColor: lightPurple,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: mainPurple),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
-          'View Reservations',
+          "View Reservations",
           style: TextStyle(
             color: mainPurple,
-            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
+        iconTheme: const IconThemeData(color: mainPurple),
         actions: const [
           Padding(
-            padding: EdgeInsets.only(right: 16),
+            padding: EdgeInsets.only(right: 12),
             child: CircleAvatar(
               radius: 18,
               backgroundColor: Color(0xFFD7C2F3),
@@ -102,6 +82,7 @@ class _ViewReservationsPageState extends State<ViewReservationsPage> {
           children: [
             TextField(
               controller: searchController,
+              onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: 'Search..',
                 prefixIcon: const Icon(Icons.search, color: mainPurple),
@@ -117,7 +98,7 @@ class _ViewReservationsPageState extends State<ViewReservationsPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                widget.selectedRoute,
+                route,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -127,16 +108,23 @@ class _ViewReservationsPageState extends State<ViewReservationsPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                widget.selectedTime,
+                departure,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Seats left: $seatsLeft',
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
             const SizedBox(height: 14),
             Expanded(
-              child: filteredReservations.isEmpty
+              child: filteredBookings.isEmpty
                   ? const Center(
                       child: Text(
                         'No reservations for this trip',
@@ -151,19 +139,19 @@ class _ViewReservationsPageState extends State<ViewReservationsPage> {
                               WidgetStatePropertyAll(Colors.grey.shade300),
                           columns: const [
                             DataColumn(label: Text('Ticket ID')),
-                            DataColumn(label: Text('Passenger ID')),
                             DataColumn(label: Text('Passenger Name')),
+                            DataColumn(label: Text('Passenger ID')),
                             DataColumn(label: Text('Seat Number')),
                             DataColumn(label: Text('Status')),
                           ],
-                          rows: filteredReservations.map((reservation) {
+                          rows: filteredBookings.map((booking) {
                             return DataRow(
                               cells: [
-                                DataCell(Text(reservation['ticketId']!)),
-                                DataCell(Text(reservation['passengerId']!)),
-                                DataCell(Text(reservation['name']!)),
-                                DataCell(Text(reservation['seat']!)),
-                                DataCell(Text(reservation['status']!)),
+                                DataCell(Text(booking['id'].toString())),
+                                DataCell(Text(booking['passengerName'].toString())),
+                                DataCell(Text(booking['passengerId'].toString())),
+                                DataCell(Text(booking['seatNumber'].toString())),
+                                DataCell(Text(booking['status'].toString())),
                               ],
                             );
                           }).toList(),
