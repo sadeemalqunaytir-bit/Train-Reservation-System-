@@ -30,11 +30,13 @@ class _AddTrainPageState extends State<AddTrainPage> {
     super.initState();
 
     if (widget.existingTrain != null) {
-      trainIdController.text = widget.existingTrain!['id'] ?? '';
-      nameController.text = widget.existingTrain!['name'] ?? '';
-      capacityController.text = widget.existingTrain!['capacity'] ?? '';
+      trainIdController.text = widget.existingTrain!['id']?.toString() ?? '';
+      nameController.text = widget.existingTrain!['name']?.toString() ?? '';
+      capacityController.text =
+          widget.existingTrain!['capacity']?.toString() ?? '';
       ticketController.text =
-          (widget.existingTrain!['ticket'] ?? '').toString().replaceAll(' SAR', '');
+          widget.existingTrain!['ticket']?.toString().replaceAll(' SAR', '') ??
+          '';
 
       selectedStatus = widget.existingTrain!['status'] ?? 'Active';
       selectedCategory = widget.existingTrain!['category'] ?? 'Passenger';
@@ -50,16 +52,6 @@ class _AddTrainPageState extends State<AddTrainPage> {
     super.dispose();
   }
 
-  String _formatTicket(String value) {
-    final number = double.parse(value);
-
-    if (number == number.toInt()) {
-      return '${number.toInt()} SAR';
-    }
-
-    return '${number.toStringAsFixed(2)} SAR';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,24 +61,18 @@ class _AddTrainPageState extends State<AddTrainPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
-              // Train ID
               TextField(
                 controller: trainIdController,
                 decoration: const InputDecoration(
                   labelText: "Train ID",
                 ),
               ),
-
-              // Name
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
                   labelText: "Name",
                 ),
               ),
-
-              // Train Category (Dropdown)
               DropdownButtonFormField<String>(
                 value: selectedCategory,
                 decoration: const InputDecoration(
@@ -104,10 +90,7 @@ class _AddTrainPageState extends State<AddTrainPage> {
                   }
                 },
               ),
-
               const SizedBox(height: 10),
-
-              // Capacity
               TextField(
                 controller: capacityController,
                 decoration: const InputDecoration(
@@ -119,10 +102,7 @@ class _AddTrainPageState extends State<AddTrainPage> {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
               ),
-
               const SizedBox(height: 10),
-
-              // Ticket Price
               TextField(
                 controller: ticketController,
                 decoration: const InputDecoration(
@@ -136,10 +116,7 @@ class _AddTrainPageState extends State<AddTrainPage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 10),
-
-              // Status
               DropdownButtonFormField<String>(
                 value: selectedStatus,
                 decoration: const InputDecoration(
@@ -157,25 +134,19 @@ class _AddTrainPageState extends State<AddTrainPage> {
                   }
                 },
               ),
-
               const SizedBox(height: 20),
-
-              // Save Button
               Row(
-  children: [
-    Expanded( // Cancel Button
-      child: OutlinedButton(
-        onPressed: () {
-          Navigator.pop(context); // go back without saving
-        },
-        child: const Text("Cancel"),
-      ),
-    ),
-
-    const SizedBox(width: 10),
-
-                  
-                  Expanded( // Save Button
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Cancel"),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         if (trainIdController.text.isEmpty ||
@@ -190,9 +161,17 @@ class _AddTrainPageState extends State<AddTrainPage> {
                           return;
                         }
 
-                        final ticketValue = double.tryParse(
-                          ticketController.text,
-                        );
+                        final capacity = int.tryParse(capacityController.text);
+                        final ticketValue = double.tryParse(ticketController.text);
+
+                        if (capacity == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Invalid capacity"),
+                            ),
+                          );
+                          return;
+                        }
 
                         if (ticketValue == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -203,16 +182,13 @@ class _AddTrainPageState extends State<AddTrainPage> {
                           return;
                         }
 
-                        final formattedTicket = _formatTicket(
-                          ticketController.text,
-                        );
-
                         Navigator.pop(context, {
                           'id': trainIdController.text,
                           'name': nameController.text,
                           'category': selectedCategory,
-                          'capacity': capacityController.text,
-                          'ticket': formattedTicket,
+                          'capacity': capacity,
+                          'availableSeats': widget.existingTrain?['availableSeats'] ?? capacity,
+                          'ticket': ticketValue,
                           'status': selectedStatus,
                         });
                       },
