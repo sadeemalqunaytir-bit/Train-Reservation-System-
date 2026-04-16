@@ -21,28 +21,41 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
   final idController = TextEditingController();
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
-  final tripController = TextEditingController();
-  final dobController = TextEditingController();
 
   String gender = "Male";
-  String seat = "Window";
+ 
+
+  String? selectedDay;
+  String? selectedMonth;
+  String? selectedYear;
+
+  final List<String> days = List.generate(31, (index) => '${index + 1}');
+  final List<String> months = List.generate(12, (index) => '${index + 1}');
+  final List<String> years = List.generate(70, (index) => '${2025 - index}');
 
   @override
   void initState() {
     super.initState();
 
     if (widget.existingPassenger != null) {
-      nameController.text = widget.existingPassenger!['name']?.toString() ?? '';
-      idController.text = widget.existingPassenger!['id']?.toString() ?? '';
-      phoneController.text =
-          widget.existingPassenger!['phone']?.toString() ?? '';
-      emailController.text =
-          widget.existingPassenger!['email']?.toString() ?? '';
-      tripController.text =
-          widget.existingPassenger!['trip']?.toString() ?? '';
-      dobController.text = widget.existingPassenger!['dob']?.toString() ?? '';
-      gender = widget.existingPassenger!['gender']?.toString() ?? 'Male';
-      seat = widget.existingPassenger!['seat']?.toString() ?? 'Window';
+      final passenger = widget.existingPassenger!;
+
+      nameController.text = passenger['name']?.toString() ?? '';
+      idController.text = passenger['id']?.toString() ?? '';
+      phoneController.text = passenger['phone']?.toString() ?? '';
+      emailController.text = passenger['email']?.toString() ?? '';
+      gender = passenger['gender']?.toString() ?? 'Male';
+     
+
+      final dob = passenger['dob']?.toString() ?? '';
+      if (dob.contains('/')) {
+        final parts = dob.split('/');
+        if (parts.length == 3) {
+          selectedDay = parts[0];
+          selectedMonth = parts[1];
+          selectedYear = parts[2];
+        }
+      }
     }
   }
 
@@ -52,36 +65,71 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
     idController.dispose();
     phoneController.dispose();
     emailController.dispose();
-    tripController.dispose();
-    dobController.dispose();
     super.dispose();
   }
 
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   void _savePassenger() {
-    if (nameController.text.trim().isEmpty ||
-        idController.text.trim().isEmpty ||
-        tripController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please fill required fields"),
-        ),
-      );
+    final name = nameController.text.trim();
+    final id = idController.text.trim();
+    final phone = phoneController.text.trim();
+    final email = emailController.text.trim();
+
+    if (name.isEmpty || id.isEmpty || phone.isEmpty) {
+      _showError("Please fill required fields");
       return;
     }
 
-    final passengerData = {
-      'id': idController.text.trim(),
-      'name': nameController.text.trim(),
-      'phone': phoneController.text.trim(),
-      'email': emailController.text.trim(),
-      'trip': tripController.text.trim(),
-      'gender': gender,
-      'dob': dobController.text.trim(),
-      'seat': seat,
-    };
+    if (RegExp(r'[0-9]').hasMatch(name)) {
+      _showError("Name must not contain numbers");
+      return;
+    }
+
+    if (!RegExp(r'^[0-9]+$').hasMatch(id)) {
+      _showError("ID must contain numbers only");
+      return;
+    }
+
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+      _showError("Phone number must be exactly 10 digits");
+      return;
+    }
+
+    if (selectedDay == null || selectedMonth == null || selectedYear == null) {
+      _showError("Please select date of birth");
+      return;
+    }
 
     final isEdit =
         widget.existingPassenger != null && widget.passengerIndex != null;
+
+    final exists = DataStorage.passengers.any(
+      (p) =>
+          p['id'] == id &&
+          (!isEdit || DataStorage.passengers.indexOf(p) != widget.passengerIndex),
+    );
+
+    if (exists) {
+      _showError("Passenger already registered with this ID");
+      return;
+    }
+
+    final dob = '$selectedDay/$selectedMonth/$selectedYear';
+
+    final passengerData = {
+      'id': id,
+      'name': name,
+      'phone': phone,
+      'email': email,
+      'gender': gender,
+      'dob': dob,
+     
+    };
 
     if (isEdit) {
       DataStorage.passengers[widget.passengerIndex!] = passengerData;
@@ -95,7 +143,7 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
         title: Text(isEdit ? "Passenger Updated" : "Passenger Saved"),
         content: Text(
           isEdit
-              ? "Passenger information updated successfully"
+              ? "Passenger updated successfully"
               : "Passenger saved successfully",
         ),
         actions: [
@@ -108,18 +156,19 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
                 idController.clear();
                 phoneController.clear();
                 emailController.clear();
-                tripController.clear();
-                dobController.clear();
 
                 setState(() {
                   gender = "Male";
-                  seat = "Window";
+                
+                  selectedDay = null;
+                  selectedMonth = null;
+                  selectedYear = null;
                 });
               } else {
                 Navigator.pop(context);
               }
             },
-            child: Text(isEdit ? "Back" : "Add Another Passenger"),
+            child: Text(isEdit ? "Back" : "Add Another"),
           ),
           TextButton(
             onPressed: () {
@@ -134,6 +183,63 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
             child: const Text("View Passengers"),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildTextField(
+    String label,
+    IconData icon, {
+    required TextEditingController controller,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          filled: true,
+          fillColor: Colors.grey[200],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDropdownBox({
+    required String hint,
+    required String? value,
+    required List<String> items,
+    required void Function(String?) onChanged,
+  }) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        child: DropdownButtonFormField<String>(
+          value: value,
+          decoration: InputDecoration(
+            labelText: hint,
+            filled: true,
+            fillColor: Colors.grey[200],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          items: items
+              .map(
+                (e) => DropdownMenuItem<String>(
+                  value: e,
+                  child: Text(e),
+                ),
+              )
+              .toList(),
+          onChanged: onChanged,
+        ),
       ),
     );
   }
@@ -161,17 +267,14 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              isEdit ? "Edit Passenger Information" : "Passenger Registration",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text("Enter the passenger details below"),
-            const SizedBox(height: 20),
 
-            buildTextField("Full Name", Icons.person, controller: nameController),
             buildTextField(
-              "National ID / Passport",
+              "Full Name",
+              Icons.person,
+              controller: nameController,
+            ),
+            buildTextField(
+              "National ID",
               Icons.badge,
               controller: idController,
             ),
@@ -181,27 +284,35 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
               controller: phoneController,
             ),
             buildTextField(
-              "Email (Optional)",
+              "Email",
               Icons.email,
               controller: emailController,
             ),
-            buildTextField(
-              "Trip Number",
-              Icons.confirmation_num,
-              controller: tripController,
-            ),
+
+            const SizedBox(height: 10),
 
             DropdownButtonFormField<String>(
               value: gender,
-              decoration: inputDecoration("Gender", Icons.person),
-              items: ["Male", "Female"]
-                  .map(
-                    (e) => DropdownMenuItem<String>(
-                      value: e,
-                      child: Text(e),
-                    ),
-                  )
-                  .toList(),
+              decoration: InputDecoration(
+                labelText: "Gender",
+                prefixIcon: const Icon(Icons.person_outline),
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: "Male",
+                  child: Text("Male"),
+                ),
+                DropdownMenuItem(
+                  value: "Female",
+                  child: Text("Female"),
+                ),
+              ],
               onChanged: (value) {
                 setState(() {
                   gender = value!;
@@ -211,82 +322,67 @@ class _AddPassengerPageState extends State<AddPassengerPage> {
 
             const SizedBox(height: 10),
 
-            TextField(
-              controller: dobController,
-              decoration: inputDecoration(
-                "Date of Birth",
-                Icons.calendar_today,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: const [
+                  Icon(Icons.calendar_today, color: Colors.grey),
+                  SizedBox(width: 8),
+                  Text(
+                    "Date of Birth",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(height: 8),
+
+            Row(
+              children: [
+                buildDropdownBox(
+                  hint: "Day",
+                  value: selectedDay,
+                  items: days,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDay = value;
+                    });
+                  },
+                ),
+                buildDropdownBox(
+                  hint: "Month",
+                  value: selectedMonth,
+                  items: months,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMonth = value;
+                    });
+                  },
+                ),
+                buildDropdownBox(
+                  hint: "Year",
+                  value: selectedYear,
+                  items: years,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedYear = value;
+                    });
+                  },
+                ),
+              ],
             ),
 
             const SizedBox(height: 10),
 
-            DropdownButtonFormField<String>(
-              value: seat,
-              decoration: inputDecoration("Seat Preference", Icons.event_seat),
-              items: ["Window", "Aisle", "No preference"]
-                  .map(
-                    (e) => DropdownMenuItem<String>(
-                      value: e,
-                      child: Text(e),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  seat = value!;
-                });
-              },
-            ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: _savePassenger,
-                child: Text(
-                  isEdit ? "Update Passenger" : "Save Passenger",
-                  style: const TextStyle(color: Colors.black),
-                ),
-              ),
+            ElevatedButton(
+              onPressed: _savePassenger,
+              child: Text(isEdit ? "Update" : "Save"),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildTextField(
-    String label,
-    IconData icon, {
-    TextEditingController? controller,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: TextField(
-        controller: controller,
-        decoration: inputDecoration(label, icon),
-      ),
-    );
-  }
-
-  InputDecoration inputDecoration(String label, IconData icon) {
-    return InputDecoration(
-      labelText: label,
-      prefixIcon: Icon(icon),
-      filled: true,
-      fillColor: Colors.grey[200],
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
       ),
     );
   }
