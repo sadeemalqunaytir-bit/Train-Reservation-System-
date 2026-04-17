@@ -3,6 +3,7 @@ import 'addpassenger_page.dart';
 import 'train_schedules_management_page.dart';
 import 'reservation_choice_page.dart';
 import 'profile_page.dart';
+import 'search_page.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -162,15 +163,15 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children:  [
             _bottomNavItem(icon: Icons.home, label: 'Home'),
-            _bottomNavItem(icon: Icons.search, label: 'Search'),
+           _bottomNavItem(icon: Icons.search,label: 'Search',onTap: () {
+    Navigator.push(context,MaterialPageRoute(builder: (context) => SearchPage(),
+      ),
+    );
+  },
+),
             _bottomNavItem(icon: Icons.confirmation_num, label: 'Bookings'),
-          _bottomNavItem(
-  icon: Icons.person,
-  label: 'Profile',
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ProfilePage()),
+          _bottomNavItem(icon: Icons.person,label: 'Profile',onTap: () {
+    Navigator.push(context,MaterialPageRoute(builder: (context) => ProfilePage()),
     );
   },
 ),
