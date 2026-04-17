@@ -248,25 +248,32 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
 class _bottomNavItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _bottomNavItem({required this.icon, required this.label});
+  final VoidCallback? onTap;
+
+  const _bottomNavItem({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: Colors.purple),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Colors.black),
-        )
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.purple),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+          )
+        ],
+      ),
     );
   }
 }
