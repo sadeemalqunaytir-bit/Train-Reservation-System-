@@ -35,6 +35,10 @@ class _BookingPageState extends State<BookingPage> {
     return int.tryParse(widget.schedule['availableSeats'].toString()) ?? 0;
   }
 
+  bool _isFull() {
+    return _getAvailableSeats() <= 0;
+  }
+
   String _seatPreview() {
     final capacity = _getCapacity();
     final seats = _getAvailableSeats();
@@ -67,6 +71,13 @@ class _BookingPageState extends State<BookingPage> {
   void _confirmBooking() {
     final seats = _getAvailableSeats();
     final capacity = _getCapacity();
+
+    if (_isFull()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("This train is FULL")),
+      );
+      return;
+    }
 
     if (_alreadyBookedSameTrip()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -112,7 +123,7 @@ class _BookingPageState extends State<BookingPage> {
       return;
     }
 
-    if (seats <= 0) {
+    if (_isFull()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("No seats available")),
       );
@@ -186,10 +197,8 @@ class _BookingPageState extends State<BookingPage> {
       ),
       child: Row(
         children: [
-          Text(
-            '$title: ',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text('$title: ',
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value)),
         ],
       ),
@@ -240,7 +249,10 @@ class _BookingPageState extends State<BookingPage> {
             _infoBox("Departure", departure),
             _infoBox("Arrival", arrival),
             _infoBox("Ticket Price", "$ticket SAR"),
-            _infoBox("Seats Left", seats.toString()),
+            _infoBox(
+              "Seats Left",
+              _isFull() ? "FULL" : seats.toString(),
+            ),
 
             const SizedBox(height: 10),
 
@@ -301,12 +313,9 @@ class _BookingPageState extends State<BookingPage> {
               width: 140,
               height: 50,
               child: ElevatedButton(
-                onPressed: _showBookingSummary,
+                onPressed: _isFull() ? null : _showBookingSummary,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: mainPurple,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
-                  ),
                 ),
                 child: const Text(
                   "Book Now",
