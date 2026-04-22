@@ -17,14 +17,12 @@ class _LoginPageState extends State<LoginPage> {
     String id = idController.text.trim();
     String password = passwordController.text.trim();
 
-
     if (id.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter your ID")),
       );
       return;
     }
-
 
     if (password.length < 6 || !RegExp(r'[a-zA-Z]').hasMatch(password)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -37,18 +35,19 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-
     if (id.startsWith('1')) {
-
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(
+          builder: (context) => const HomePage(role: "admin"),
+        ),
       );
     } else if (id.startsWith('2')) {
-
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(
+          builder: (context) => const HomePage(role: "staff"),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -72,9 +71,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 const SizedBox(height: 20),
-
                 CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.purple.withOpacity(0.2),
@@ -84,9 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                     size: 100,
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 const Text(
                   'Login Page',
                   style: TextStyle(
@@ -94,9 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
 
                 SizedBox(
                   height: 45,
@@ -119,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 15),
 
-
                 SizedBox(
                   height: 45,
                   width: 300,
@@ -140,7 +132,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 25),
-
 
                 SizedBox(
                   height: 45,
