@@ -61,7 +61,7 @@ class _SearchPageState extends State<SearchPage> {
 
     if (result.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("No results found")),
+        const SnackBar(content: Text("No results found")),
       );
     }
   }
@@ -69,34 +69,38 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEDE7F6),
+      backgroundColor: const Color(0xFFEDE7F6),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
 
-              // Header
+             
               Row(
                 children: [
-                  Icon(Icons.arrow_back),
-                  SizedBox(width: 10),
-                  Text(
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
                     "Search",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-              
               TextField(
                 controller: searchController,
-                onChanged: (_) => performSearch(), 
+                onChanged: (_) => performSearch(),
                 decoration: InputDecoration(
                   hintText: "Search...",
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -106,9 +110,8 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-          
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -118,10 +121,10 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
 
-              SizedBox(height: 20),
-              Divider(),
+              const SizedBox(height: 20),
+              const Divider(),
 
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Result",
@@ -129,18 +132,17 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
 
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-              // Results
               Expanded(
                 child: filteredData.isEmpty
-                    ? Center(child: Text("No results"))
+                    ? const Center(child: Text("No results"))
                     : ListView.builder(
                         itemCount: filteredData.length,
                         itemBuilder: (context, index) {
                           return Container(
-                            margin: EdgeInsets.symmetric(vertical: 8),
-                            padding: EdgeInsets.all(16),
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15),
@@ -165,12 +167,12 @@ class _SearchPageState extends State<SearchPage> {
         setState(() {
           selectedFilter = title;
         });
-        performSearch(); 
+        performSearch();
       },
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: isSelected ? Colors.deepPurple : Colors.deepPurple[100],
               borderRadius: BorderRadius.circular(15),
@@ -180,7 +182,7 @@ class _SearchPageState extends State<SearchPage> {
               color: isSelected ? Colors.white : Colors.deepPurple,
             ),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(title),
         ],
       ),
