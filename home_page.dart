@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 25),
 
-              
+
               if (widget.role == "admin") ...[
                 const Text(
                   "System Statistics",
@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 15),
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
                   if (widget.role == "staff")
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
 
-                 
+                const SizedBox(width: 20),
                   if (widget.role == "admin")
                     _quickAccessItem(
                       icon: Icons.schedule,
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const TrainSchedulesManagementPage(),
+                            const TrainSchedulesManagementPage(),
                           ),
                         );
                         refresh();
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const ReservationChoicePage(),
+                            const ReservationChoicePage(),
                           ),
                         );
                         refresh();
@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 30),
 
-             
+
               if (widget.role == "staff") ...[
                 const Text(
                   'Recent Trips Booked',
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-     
+
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
