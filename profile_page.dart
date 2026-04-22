@@ -35,7 +35,10 @@ class HomePage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => ProfilePage()),
             );
           },
-          child: Text("Go to Profile"),
+          child: Text(
+            "Go to Profile",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
@@ -48,10 +51,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String firstName = "Admin";
+  String firstName = "Employee";
   String lastName = "Name";
   String phone = "0500000000";
-  String email = "admin@gmail.com";
+  String email = "employee@gmail.com";
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +66,6 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
 
-              
               Row(
                 children: [
                   IconButton(
@@ -142,7 +144,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           });
                         }
                       },
-                      child: Text("Edit"),
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     )
                   ],
                 ),
@@ -171,7 +176,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
               Spacer(),
 
-            
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
@@ -182,10 +186,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     MaterialPageRoute(
                       builder: (context) => const LoginPage(),
                     ),
-                    (route) => false,
+                        (route) => false,
                   );
                 },
-                child: Text("Log Out"),
+                child: Text(
+                  "Log Out",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             ],
           ),
@@ -205,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
           filled: true,
           fillColor: Colors.white,
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+          EdgeInsets.symmetric(horizontal: 15, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
@@ -285,7 +292,10 @@ class _EditPageState extends State<EditPage> {
                     });
                   }
                 },
-                child: Text("Save"),
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ),
               )
             ],
           ),
@@ -304,7 +314,7 @@ class _EditPageState extends State<EditPage> {
           filled: true,
           fillColor: Colors.white,
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+          EdgeInsets.symmetric(horizontal: 15, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
