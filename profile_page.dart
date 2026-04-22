@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(), 
+      home: HomePage(),
     );
   }
 }
@@ -62,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
 
-              // 🔹 Header
+              
               Row(
                 children: [
                   IconButton(
@@ -74,13 +75,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(width: 5),
                   Text(
                     "Profile",
-                    style:
-                    TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   )
                 ],
               ),
 
               SizedBox(height: 20),
+
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -103,7 +107,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             "$firstName $lastName",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                           Text(email),
                         ],
@@ -143,7 +149,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
 
               SizedBox(height: 20),
-
               Divider(),
 
               Align(
@@ -151,13 +156,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Text(
                   "Personal Information",
                   style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
 
               SizedBox(height: 10),
 
-              // 🔹 Floating Labels
               buildInfo("First Name", firstName),
               buildInfo("Last Name", lastName),
               buildInfo("Phone Number", phone),
@@ -165,11 +171,20 @@ class _ProfilePageState extends State<ProfilePage> {
 
               Spacer(),
 
+            
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                    (route) => false,
+                  );
+                },
                 child: Text("Log Out"),
               )
             ],
@@ -190,11 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
           filled: true,
           fillColor: Colors.white,
           contentPadding:
-          EdgeInsets.symmetric(horizontal: 15, vertical: 18),
-          floatingLabelStyle: TextStyle(
-            color: Colors.deepPurple,
-            fontWeight: FontWeight.bold,
-          ),
+              EdgeInsets.symmetric(horizontal: 15, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
@@ -253,7 +264,6 @@ class _EditPageState extends State<EditPage> {
           key: _formKey,
           child: Column(
             children: [
-
               buildField(firstName, "First Name"),
               buildField(lastName, "Last Name"),
               buildField(phone, "Phone Number"),
@@ -294,13 +304,12 @@ class _EditPageState extends State<EditPage> {
           filled: true,
           fillColor: Colors.white,
           contentPadding:
-          EdgeInsets.symmetric(horizontal: 15, vertical: 18),
+              EdgeInsets.symmetric(horizontal: 15, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide.none,
           ),
         ),
-        
         validator: (value) {
           if (value == null || value.isEmpty) {
             return "This field is required";
