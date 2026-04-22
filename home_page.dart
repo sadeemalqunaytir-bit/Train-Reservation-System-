@@ -4,8 +4,11 @@ import 'train_schedules_management_page.dart';
 import 'reservation_choice_page.dart';
 import 'profile_page.dart';
 import 'search_page.dart';
+
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final String role;
+
+  const HomePage({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +39,16 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-
-            const Text(
-              'Welcome back, Admin!',
-              style: TextStyle(
+            Text(
+              role == "admin"
+                  ? 'Welcome back, Admin!'
+                  : 'Welcome back, Staff!',
+              style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             const SizedBox(height: 8),
             const Text(
               'Where would you like to do today?',
@@ -54,7 +59,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
 
             SizedBox(
               height: 50,
@@ -74,8 +78,8 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
 
+            const SizedBox(height: 30),
 
             const Text(
               'Quick Access',
@@ -84,57 +88,67 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             const SizedBox(height: 15),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _quickAccessItem(
-                  icon: Icons.people,
-                  label: 'Passengers',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddPassengerPage(),
-                      ),
-                    );
-                  },
-                ),
-                _quickAccessItem(
-                    icon: Icons.schedule, 
+
+                if (role == "staff")
+                  _quickAccessItem(
+                    icon: Icons.people,
+                    label: 'Passengers',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddPassengerPage(),
+                        ),
+                      );
+                    },
+                  ),
+
+                if (role == "admin")
+                  _quickAccessItem(
+                    icon: Icons.schedule,
                     label: 'Schedules',
-                     onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                       builder: (context) => const TrainSchedulesManagementPage(),
-                      ),
-                    );
-                  },
-                ),
-                _quickAccessItem(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                          const TrainSchedulesManagementPage(),
+                        ),
+                      );
+                    },
+                  ),
+
+                if (role == "staff")
+                  _quickAccessItem(
                     icon: Icons.confirmation_num,
                     label: 'Reservations',
                     onTap: () {
                       Navigator.push(
-                   context,
-                 MaterialPageRoute(
-           builder: (context) => const ReservationChoicePage(),
-      ),
-    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                          const ReservationChoicePage(),
+                        ),
+                      );
                     },
-                ),
+                  ),
               ],
             ),
-            const SizedBox(height: 30),
 
+            const SizedBox(height: 30),
 
             const Text(
               'Recent Trips Booked',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 15),
 
+            const SizedBox(height: 15),
 
             Column(
               children: [
@@ -157,33 +171,51 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: Colors.grey[100],
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius:
+          const BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children:  [
+          children: [
             _bottomNavItem(icon: Icons.home, label: 'Home'),
-           _bottomNavItem(icon: Icons.search,label: 'Search',onTap: () {
-    Navigator.push(context,MaterialPageRoute(builder: (context) => SearchPage(),
-      ),
-    );
-  },
-),
-            _bottomNavItem(icon: Icons.confirmation_num, label: 'Bookings'),
-          _bottomNavItem(icon: Icons.person,label: 'Profile',onTap: () {
-    Navigator.push(context,MaterialPageRoute(builder: (context) => ProfilePage()),
-    );
-  },
-),
+
+            _bottomNavItem(
+              icon: Icons.search,
+              label: 'Search',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SearchPage()),
+                );
+              },
+            ),
+
+            if (role == "admin")
+              _bottomNavItem(
+                icon: Icons.confirmation_num,
+                label: 'Bookings',
+              ),
+
+            _bottomNavItem(
+              icon: Icons.person,
+              label: 'Profile',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-
   Widget _quickAccessItem(
-      {required IconData icon, required String label, required VoidCallback onTap}) {
+      {required IconData icon,
+        required String label,
+        required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -200,7 +232,8 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
           ],
@@ -209,9 +242,10 @@ class HomePage extends StatelessWidget {
     );
   }
 
-
   Widget _tripItem(
-      {required String route, required String status, required Color color}) {
+      {required String route,
+        required String status,
+        required Color color}) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -223,16 +257,19 @@ class HomePage extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.train, color: Colors.purple, size: 30),
+              const Icon(Icons.train,
+                  color: Colors.purple, size: 30),
               const SizedBox(width: 10),
               Text(
                 route,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ],
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(8),
@@ -240,7 +277,9 @@ class HomePage extends StatelessWidget {
             child: Text(
               status,
               style: const TextStyle(
-                  fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           )
         ],
@@ -248,6 +287,7 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
 class _bottomNavItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -270,7 +310,8 @@ class _bottomNavItem extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
+            style:
+            const TextStyle(fontSize: 12, color: Colors.black),
           )
         ],
       ),
