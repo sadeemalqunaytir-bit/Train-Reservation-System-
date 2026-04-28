@@ -22,3 +22,23 @@ int seatsLeft(Map<String, dynamic> schedule) {
 int capacity(Map<String, dynamic> schedule) {
   return int.tryParse(schedule['capacity'].toString()) ?? 0;
 }
+
+
+// New helper functions for booking reports
+
+int totalBookings() {
+  return DataStorage.bookings.length;
+}
+
+int confirmedBookings() {
+  return DataStorage.bookings
+      .where((booking) =>
+          booking['status'] == 'Confirmed' || booking['status'] == 'Active')
+      .length;
+}
+
+int cancelledBookings() {
+  return DataStorage.bookings
+      .where((booking) => booking['status'] == 'Cancelled')
+      .length;
+}
