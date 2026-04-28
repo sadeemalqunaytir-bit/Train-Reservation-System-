@@ -5,6 +5,8 @@ import 'reservation_choice_page.dart';
 import 'profile_page.dart';
 import 'search_page.dart';
 import 'data_storage.dart';
+import 'booking_options_page.dart';
+import 'book_page.dart';
 
 class HomePage extends StatefulWidget {
   final String role;
@@ -46,7 +48,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const SizedBox(height: 20),
 
               Text(
@@ -67,7 +68,6 @@ class _HomePageState extends State<HomePage> {
               ),
 
               const SizedBox(height: 25),
-
 
               if (widget.role == "admin") ...[
                 const Text(
@@ -106,7 +106,6 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   if (widget.role == "staff")
                     _quickAccessItem(
                       icon: Icons.people,
@@ -122,7 +121,8 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
 
-                const SizedBox(width: 20),
+                  const SizedBox(width: 20),
+
                   if (widget.role == "admin")
                     _quickAccessItem(
                       icon: Icons.schedule,
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            const TrainSchedulesManagementPage(),
+                                const TrainSchedulesManagementPage(),
                           ),
                         );
                         refresh();
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            const ReservationChoicePage(),
+                                const ReservationChoicePage(),
                           ),
                         );
                         refresh();
@@ -158,7 +158,6 @@ class _HomePageState extends State<HomePage> {
               ),
 
               const SizedBox(height: 30),
-
 
               if (widget.role == "staff") ...[
                 const Text(
@@ -189,7 +188,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
@@ -212,11 +210,27 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-            if (widget.role == "admin")
-              _bottomNavItem(
-                icon: Icons.confirmation_num,
-                label: 'Bookings',
-              ),
+            _bottomNavItem(
+              icon: Icons.confirmation_num,
+              label: 'Bookings',
+              onTap: () {
+                if (widget.role == "admin") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Booking_Options_Page(),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Book_Page(),
+                    ),
+                  );
+                }
+              },
+            ),
 
             _bottomNavItem(
               icon: Icons.person,
