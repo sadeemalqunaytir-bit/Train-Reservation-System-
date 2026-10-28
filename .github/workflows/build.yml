@@ -21,18 +21,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Analyze Flutter code
-        run: flutter analyze
-        continue-on-error: true
-
       - name: Run SonarQube analysis
         uses: SonarSource/sonarqube-scan-action@v6
         env:
